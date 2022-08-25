@@ -27,5 +27,8 @@ class TestEtheremService(TestCase):
 
     def test_getContract_receipt(self):
         tx_hash = '0x23997910e25b3ac5ef4a115a092351549753705c9bf92853004bb6be20c5d80c'
-        rs = self.eth.get_contract_receipt(tx_hash)
-        pprint(rs)
+        receipt = self.eth.get_contract_receipt(tx_hash)
+        tx = self.eth.get_contract_transaction(tx_hash)
+
+        # pprint(tx.transactionHash)
+        self.assertEqual(tx.hash, receipt.transactionHash)

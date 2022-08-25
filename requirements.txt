@@ -1,0 +1,5 @@
+Django==4.1
+django_environ==0.9.0
+environ==1.0
+hexbytes==0.2.1
+web3==5.18.0

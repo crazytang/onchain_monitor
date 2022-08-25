@@ -9,11 +9,19 @@ https://docs.djangoproject.com/en/4.1/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.1/ref/settings/
 """
-
+import os
 from pathlib import Path
+import environ
+
+# initialize env
+env = environ.Env(
+     # set casting, default value
+     DEBUG=(bool, False)
+)
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
+environ.Env.read_env(os.path.join(BASE_DIR, '.env'))
 
 
 # Quick-start development settings - unsuitable for production
@@ -23,7 +31,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-az+)c6c!rdabs_t=w_4)+y$rep=&90u6#y6^$hmunbk@0y)a8y'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = env('DEBUG')
 
 ALLOWED_HOSTS = []
 
@@ -77,11 +85,11 @@ WSGI_APPLICATION = 'oc_django.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'onchain',
-        'HOST': 'localhost',
-        'PORT': 3306,
-        'USER': 'crazytang',
-        'PASSWORD': '8888'
+        'NAME': env('DB_NAME'), #'onchain',
+        'HOST': env('DB_HOST'), #'localhost',
+        'PORT': env('DB_PORT'), #3306,
+        'USER': env('DB_USER'), #'crazytang',
+        'PASSWORD': env('DB_PASS'), #'8888'
     }
 }
 
