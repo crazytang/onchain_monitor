@@ -7,8 +7,10 @@ from oc_django.libs.dj_base_object import DjBaseObject
 
 class Block(DjBaseObject):
     def __init__(self, data:AttributeDict):
-        self.author = data['author']
-        self.baseFeePerGas = data['baseFeePerGas']
+        # print('data', data)
+        self.author = '' if 'author' not in data else data['author']
+        self.baseFeePerGas = '' if 'baseFeePerGas' not in data else data['baseFeePerGas']
+        self.receiptsRoot = '' if 'receiptsRoot' not in data else data['receiptsRoot']
         self.difficulty = data['difficulty']
         self.extraData = HexBytes(data['extraData']).hex()
         self.gasLimit = data['gasLimit']
@@ -18,12 +20,12 @@ class Block(DjBaseObject):
         self.miner = data['miner']
         self.number = data['number']
         self.parentHash = HexBytes(data['parentHash']).hex()
-        self.sealFields = data['sealFields']
+        self.sealFields = '' if 'sealFields' not in data else data['sealFields']
         self.sha3Uncles = HexBytes(data['sha3Uncles']).hex()
-        self.signature = data['signature']
+        self.signature = '' if 'signature' not in data else data['signature']
         self.size = data['size']
         self.stateRoot = HexBytes(data['stateRoot']).hex()
-        self.step = data['step']
+        self.step = 0 if 'step' not in data else data['step']
         self.timestamp = data['timestamp']
         self.totalDifficulty = data['totalDifficulty']
 

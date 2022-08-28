@@ -17,7 +17,7 @@ class LogService:
         return LogService.logger
 
     @staticmethod
-    def write_to_log(dir_name: str, file_name: str, content: str, new_instance=False) -> str:
+    def write_to_log(dir_name: str, file_name: str, content: str, new_instance=False, output=False) -> str:
         """
         写入日志
         :param dir_name:
@@ -45,5 +45,8 @@ class LogService:
 
         logger.removeHandler(file_handler)
         # file_handler.close()
+
+        if output:
+            print(content)
 
         return file

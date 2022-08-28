@@ -122,7 +122,7 @@ TIME_ZONE = 'PRC'
 
 USE_I18N = True
 
-USE_TZ = True
+USE_TZ = False
 
 
 # Static files (CSS, JavaScript, Images)
@@ -193,5 +193,20 @@ LOGGING = {
             'handlers': ['file'],
             'propagate': True,  # 是否让日志信息继续冒泡给其他的日志处理系统
         },
+    }
+}
+
+CHAIN_SETTING = {
+    'kovan' : {
+        'rpc': env('KOAVN_RPC_GATEWAY'),
+        'wss': env('KOAVN_WSS_GATEWAY')
+    },
+    'mainnet' : {
+        'rpc': env('MAINNET_RPC_GATEWAY'),
+        'wss': env('MAINNET_WSS_GATEWAY')
+    },
+    'goerli' : {
+        'rpc': env('GOERLI_RPC_GATEWAY'),
+        'wss': env('GOERLI_WSS_GATEWAY')
     }
 }

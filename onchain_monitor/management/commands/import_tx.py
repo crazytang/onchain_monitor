@@ -14,19 +14,25 @@ class Command(BaseCommand):
 
     addresses: [str] = []
     def add_arguments(self, parser):
+        parser.add_argument('network', type=str, default='kovan', help='network name')
         parser.add_argument('block_num', type=int, help='from block number')
         # pass
 
     def handle(self, *args, **options):
         start_block_num = int(options['block_num']) # 开始block number
-
-        self.ethereum_service = EthereumService()
+        network = options['network']
+        self.ethereum_service = EthereumService(network)
         latest_block_num = self.ethereum_service.get_block_number() # 结束block number
+        count = latest_block_num - start_block_num + 1
+        print('from %d to %d, total %d blocks' %(start_block_num, latest_block_num, count))
+        if count <= 0:
+            print('nothing can be detected')
+            return
 
         for i in range(start_block_num, latest_block_num):
+            print('block number', i, 'remaining ', latest_block_num - i)
             block = self.ethereum_service.get_block_from_number(i)
             self.detect(block)
-            return
 
     def get_contract_addresses(self)->[str]:
         """
@@ -54,10 +60,10 @@ class Command(BaseCommand):
 
         txs = block.transactions
         for i in range(0, len(txs)):
-            print('block number %d' %i)
-            receipt= self.ethereum_service.get_contract_receipt(txs[i])
+            receipt = self.ethereum_service.get_contract_receipt(txs[i])
             for ii in range(0, len(addresses)):
-                if receipt.to.lower() == addresses[ii].lower():
+                # print('receipt', receipt)
+                if receipt.to and receipt.to.lower() == addresses[ii].lower():
                     print('hitted a tx %s' % receipt.transactionHash)
                     tx = self.ethereum_service.get_contract_transaction(receipt.transactionHash)
                     ContractTransactionService.handleTx(block, tx, receipt)

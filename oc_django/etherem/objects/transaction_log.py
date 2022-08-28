@@ -6,6 +6,7 @@ from oc_django.libs.dj_base_object import DjBaseObject
 
 class TransactionLog(DjBaseObject):
     def __init__(self, data: AttributeDict):
+        # print('data', data)
         self.address = data['address']
         self.blockHash = data['blockHash'].hex()
         self.blockNumber = data['blockNumber']
@@ -15,5 +16,5 @@ class TransactionLog(DjBaseObject):
         self.topics = batch_hex_bytes_to_string(data['topics'])
         self.transactionHash = data['transactionHash'].hex()
         self.transactionIndex = data['transactionIndex']
-        self.transactionLogIndex = int(data['transactionLogIndex'], 16)
-        self.type = data['type']
+        self.transactionLogIndex = 0 if 'transactionLogIndex' not in data else int(data['transactionLogIndex'], 16)
+        self.type = 0 if 'type' not in data else data['type']
