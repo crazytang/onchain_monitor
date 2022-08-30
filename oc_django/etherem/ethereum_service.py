@@ -1,16 +1,13 @@
 import json
-from pprint import pprint
 
 from django.conf import settings
 from hexbytes import HexBytes
 from web3 import Web3
-from web3.datastructures import AttributeDict
-from web3.providers import JSONBaseProvider
 
 from oc_django.etherem.objects.block import Block
 from oc_django.etherem.objects.contract_receipt import ContractReceipt
 from oc_django.etherem.objects.contract_transaction import ContractTransaction
-from oc_django.helpers.utils import bn_to_number
+from oc_django.helpers.utils import bn_to_number, to_hex
 
 
 class EthereumService:
@@ -25,16 +22,16 @@ class EthereumService:
         return Block(data)
 
     def get_balance(self, user_address: str) -> float:
-        return bn_to_number( self.eth.getBalance(user_address))
+        return bn_to_number(self.eth.getBalance(user_address))
 
-    def get_contract_receipt(self, tx_hash:str) -> ContractReceipt:
-        return ContractReceipt(self.eth.get_transaction_receipt(tx_hash))
+    def get_contract_receipt(self, tx_hash: str) -> ContractReceipt:
+        return ContractReceipt(self.eth.get_transaction_receipt(to_hex(tx_hash)))
 
-    def get_raw_contract_receipt(self, tx_hash:str) -> (ContractReceipt, str):
+    def get_raw_contract_receipt(self, tx_hash: str) -> (ContractReceipt, str):
         """
         the db need the raw transaction data
         """
-        raw = self.eth.get_transaction_receipt(tx_hash)
+        raw = self.eth.get_transaction_receipt(to_hex(tx_hash))
         return ContractReceipt(raw), self.raw_receipt_to_json(raw)
 
     def raw_receipt_to_json(self, raw_receipt) -> str:
@@ -72,5 +69,20 @@ class EthereumService:
     def get_contract_transaction(self, tx_hash: str):
         return ContractTransaction(self.eth.get_transaction(tx_hash))
 
-    def get_block_number(self)->int:
+    def get_block_number(self) -> int:
         return self.eth.get_block_number()
+
+    def wait_transaction_receipt(self, tx_hash: str) -> ContractReceipt:
+        """
+        waiting for transaction fulfilled
+        """
+        raw = self.eth.wait_for_transaction_receipt(to_hex(tx_hash))
+        return ContractReceipt(raw)
+
+    def wait_raw_transaction_receipt(self, tx_hash: str) -> (ContractReceipt, str):
+        """
+        waiting for transaction fulfilled, and return raw data
+        """
+        raw = self.eth.wait_for_transaction_receipt(tx_hash)
+        return ContractReceipt(raw), self.raw_receipt_to_json(raw)
+

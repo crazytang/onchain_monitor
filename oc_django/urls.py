@@ -20,3 +20,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('onchain/', include('onchain_monitor.urls')),
 ]
+# For Django >= 2.0
+urlpatterns += [
+    path('django-rq/', include('django_rq.urls'))
+]

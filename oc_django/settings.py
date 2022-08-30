@@ -14,6 +14,8 @@ from pathlib import Path
 import environ
 
 # initialize env
+from django.core.cache.backends.redis import RedisCache
+
 env = environ.Env(
      # set casting, default value
      DEBUG=(bool, False)
@@ -45,6 +47,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django_rq',
     'onchain_monitor.apps.OnchainMonitorConfig'
 ]
 
@@ -210,3 +213,49 @@ CHAIN_SETTING = {
         'wss': env('GOERLI_WSS_GATEWAY')
     }
 }
+
+RQ_QUEUES = {
+    'default': {
+        'HOST': 'localhost',
+        'PORT': 6379,
+        'DB': 0,
+        'PASSWORD': 'rabi2016rabi',
+        'DEFAULT_TIMEOUT': 360,
+    },
+    # 'with-sentinel': {
+    #     'SENTINELS': [('localhost', 26736), ('localhost', 26737)],
+    #     'MASTER_NAME': 'redismaster',
+    #     'DB': 0,
+    #     'PASSWORD': 'secret',
+    #     'SOCKET_TIMEOUT': None,
+    #     'CONNECTION_KWARGS': {
+    #         'socket_connect_timeout': 0.3
+    #     },
+    # },
+    'high': {
+        'URL': os.getenv('REDISTOGO_URL', 'redis://localhost:6379/0'), # If you're on Heroku
+        'DEFAULT_TIMEOUT': 500,
+    },
+    'low': {
+        'HOST': 'localhost',
+        'PORT': 6379,
+        'DB': 0,
+    }
+}
+
+# RQ_EXCEPTION_HANDLERS = ['path.to.my.handler'] # If you need custom exception handlers
+
+RQ = {
+    'DEFAULT_RESULT_TTL': 5000,
+}
+
+# CACHES = {
+#     'redis-cache': {
+#         'BACKEND': 'redis_cache.cache.RedisCache',
+#         'LOCATION': 'localhost:6379:1',
+#         'OPTIONS': {
+#             'CLIENT_CLASS': 'django_redis.client.DefaultClient',
+#             'MAX_ENTRIES': 5000,
+#         },
+#     },
+# }

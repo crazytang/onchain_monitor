@@ -15,7 +15,7 @@ class ContractTransactionService:
         return ContractTransactionInfo.objects.filter(tx_hash=tx_hash).first()
 
     @staticmethod
-    def handleTx(block: Block, tx: ContractTransaction, receipt: ContractReceipt, raw_receipt:str,network='kovan'):
+    def handleTx(block: Block, tx: ContractTransaction, receipt: ContractReceipt, raw_receipt:str,network='kovan') -> ContractTransactionInfo:
         """
         handle the transaction data, then save to db
         """
@@ -42,6 +42,7 @@ class ContractTransactionService:
         tx_info.save()
 
         # print('tx_info', tx_info)
+        return tx_info
 
     @staticmethod
     def handle_tx_from_wss(block_number: int, contract_addresses: [str], network:str):
